@@ -15,21 +15,6 @@ resource "google_compute_instance" "ldap-instance" {
     }
   }
 
-  /*provisioner "file" {
-    connection {
-      host = google_compute_instance.ldap-instance.network_interface.0.access_config.0.nat_ip
-      type = "ssh"
-      user = "epam"
-      private_key = file(var.private_key) 
-      agent = "false"
-    }
-  }
-
-  metadata = {
-    ssh-keys = "epam:${file(var.public_key)}"
-  }
-  */
-
   metadata_startup_script = file("script.sh")
     
   network_interface {
