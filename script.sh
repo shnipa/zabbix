@@ -1,21 +1,27 @@
 #!/bin/bash
+
 sudo su
 yum update -y
 yum -y install openldap compat-openldap openldap-clients openldap-servers openldap-servers-sql openldap-devel
 systemctl start slapd
 systemctl enable slapd
-slappasswd -s parol > PASS
+
+slappasswd -s andwegoagain > temp
+
+
 
 cat > ldaprootpasswd.ldif <<EOF
 dn: olcDatabase={0}config,cn=config
 changetype: modify
 add: olcRootPW
-olcRootPW: $(cat PASS)
+olcRootPW: $(cat temp)
 EOF
 
 ldapmodify -Y EXTERNAL -H ldapi:/// -f ldaprootpasswd.ldif
+
 cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
 chown -R ldap:ldap /var/lib/ldap
+
 systemctl restart slapd
 
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
@@ -69,7 +75,8 @@ objectClass: organizationalUnit
 ou: Group
 EOF
 
-ldapadd -x -w parol -D "cn=Manager,dc=devopsldab,dc=com" -f baseldapdomain.ldif
+ldapadd -x -w andwegoagain -D "cn=Manager,dc=devopsldab,dc=com" -f baseldapdomain.ldif
+
 
 cat > ldapgroup.ldif <<EOF
 dn: cn=Manager,ou=Group,dc=devopsldab,dc=com
@@ -78,7 +85,7 @@ objectClass: posixGroup
 gidNumber: 1005
 EOF
 
-ldapadd -x -w parol -D "cn=Manager,dc=devopsldab,dc=com" -f ldapgroup.ldif
+ldapadd -x -w andwegoagain -D "cn=Manager,dc=devopsldab,dc=com" -f ldapgroup.ldif
 
 cat > ldapuser.ldif <<EOF
 dn: uid=my_user,ou=People,dc=devopsldab,dc=com
@@ -91,7 +98,7 @@ uid: my_user
 uidNumber: 1005
 gidNumber: 1005
 homeDirectory: /home/my_user
-userPassword: $(cat PASS)
+userPassword: $(cat temp)
 loginShell: /bin/bash
 gecos: my_user
 shadowLastChange: 0
@@ -99,13 +106,15 @@ shadowMax: -1
 shadowWarning: 0
 EOF
 
-ldapadd -x -w parol -D "cn=Manager,dc=devopsldab,dc=com" -f ldapuser.ldif
+ldapadd -x -w andwegoagain -D "cn=Manager,dc=devopsldab,dc=com" -f ldapuser.ldif
 
-rm -f PASS
+rm -f temp
 
 yum install -y phpldapadmin
+
 sed -i '397 s;// $servers;$servers;' /etc/phpldapadmin/config.php
 sed -i '398 s;$servers->setValue;// $servers->setValue;' /etc/phpldapadmin/config.php
 sed -i ' s;Require local;Require all granted;' /etc/httpd/conf.d/phpldapadmin.conf
 sed -i ' s;Allow from 127.0.0.1;Allow from 0.0.0.0;' /etc/httpd/conf.d/phpldapadmin.conf
+
 systemctl restart httpd

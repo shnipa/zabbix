@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "ldap-instance" {
-  name         = "LDAP-1"
+  name         = "ldap-1"
   machine_type = "n1-standard-1"
   tags         = ["http-server", "https-server"]
 
@@ -15,7 +15,7 @@ resource "google_compute_instance" "ldap-instance" {
     }
   }
 
-  provisioner "file" {
+  /*provisioner "file" {
     connection {
       host = google_compute_instance.ldap-instance.network_interface.0.access_config.0.nat_ip
       type = "ssh"
@@ -28,6 +28,7 @@ resource "google_compute_instance" "ldap-instance" {
   metadata = {
     ssh-keys = "epam:${file(var.public_key)}"
   }
+  */
 
   metadata_startup_script = file("script.sh")
     
