@@ -1,5 +1,4 @@
 #!/bin/bash
-
 sudo yum install java-1.8.0-openjdk -y
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
@@ -35,7 +34,7 @@ EOF
 
 sudo systemctl enable kibana
 sudo systemctl start kibana
-sleep 180
+sleep 3m
 
 cat >> /etc/elasticsearch/elasticsearch.yml <<EOF
 network.host: 0.0.0.0
@@ -56,5 +55,5 @@ curl -XPUT 'http://${ek_server}:9200/logstash-$(date +%Y.%m.%d)-000001/_settings
 }'
 EOF
 chmod +x /tmp/tomcat_replicas_0.sh
-sleep 360
+sleep 5m
 /tmp/tomcat_replicas_0.sh
