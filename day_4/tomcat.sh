@@ -1,5 +1,4 @@
 #!/bin/bash
-
 sudo yum install -y java-1.8.0-openjdk
 sudo yum install -y tomcat wget tomcat-admin-webapps tomcat-docs-webapp tomcat-javadoc tomcat-webapps
 
@@ -17,7 +16,6 @@ type=rpm-md
 EOF
 
 sudo yum install -y logstash
-
 sudo cat > /etc/logstash/conf.d/logstash.conf <<EOF
 input {
 	file {
@@ -37,9 +35,7 @@ EOF
 
 echo "path.config: \"/etc/logstash/conf.d/*.conf\"" >> /etc/logstash/logstash.yml
 
-
 wget -P /var/lib/tomcat/webapps/ https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
-
 chown tomcat:tomcat /var/lib/tomcat/webapps/sample.war
 sudo chmod 775 /var/lib/tomcat/webapps/sample.war
 sudo chmod 775 -R /usr/share/tomcat/logs/
