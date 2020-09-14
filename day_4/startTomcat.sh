@@ -48,5 +48,5 @@ sudo systemctl enable logstash
 sudo systemctl enable tomcat
 
 sudo systemctl start tomcat
-sleep 240
+sleep 300
 sudo systemctl start logstash

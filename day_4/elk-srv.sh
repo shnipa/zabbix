@@ -29,22 +29,13 @@ type=rpm-md
 EOF
 
 sudo yum install -y kibana
-
-# set options kibana
 cat >> /etc/kibana/kibana.yml <<EOF
 server.host: "0.0.0.0"
 EOF
 
 sudo systemctl enable kibana
 sudo systemctl start kibana
-
 sleep 180
-
-#default settings elasticsearch:
-#network.host: 192.168.0.1
-#http.port: 9200
-#discovery.seed_hosts: ["host1", "host2"]
-
 
 cat >> /etc/elasticsearch/elasticsearch.yml <<EOF
 network.host: 0.0.0.0

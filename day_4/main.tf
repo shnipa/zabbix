@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "ek-server" {
-  name         = "${var.name}"
+  name         = var.name
   machine_type = var.machine_type
   zone         = var.zone
 
@@ -16,18 +16,16 @@ resource "google_compute_instance" "ek-server" {
   }
 
   network_interface {
-    network = var.network
+    network = "default"
     access_config {
     }
   }
 
-  metadata_startup_script = templatefile("elkServ.sh", {
-    ek_server = "${var.name}" 
-  })
+  metadata_startup_script = templatefile("elk-srv.sh", {ek_server = "${var.name}" })
 }
 
 resource "google_compute_instance" "tomcat" {
-  name         = "client-tomcat"
+  name         = var.tomcat_name
   machine_type = var.machine_type
   zone         = var.zone
 
@@ -38,14 +36,10 @@ resource "google_compute_instance" "tomcat" {
   }
 
   network_interface {
-    network = var.network
-    access_config {
-    }
+    network = "default"
+    access_config {}
   }
 
-  
-  metadata_startup_script = templatefile("startTomcat.sh", {
-    ek_server = "${var.name}" 
+  metadata_startup_script = templatefile("tomcat.sh", {ek_server = "${var.name}" 
   })
 }
-
