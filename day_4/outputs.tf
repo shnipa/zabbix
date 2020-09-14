@@ -3,7 +3,7 @@ output "kibana" {
 }
 
 output "elasticSearch" {
-  value = "http://${google_compute_instance.ek-server.network_interface[0].access_config[0].nat_ip}:9200"
+  value = "http://${google_compute_instance.ek-server.network_interface[0].access_config[0].nat_ip}:9200/_cat/indices"
 }
 
 output "tomcat" {
