@@ -52,3 +52,7 @@ systemctl enable zabbix-server && systemctl start zabbix-server && systemctl sta
 firewall-cmd --add-port={10051/tcp,10050/tcp} --permanent
 firewall-cmd --add-port={80/tcp,443/tcp} --permanent
 firewall-cmd --reload
+
+#parsing a log file
+chgrp zabbix /var/log/secure 
+chmod 640 /var/log/secure 
