@@ -16,11 +16,10 @@ yum -y install epel-release
 
 # install zabbix
 rpm -Uvh https://repo.zabbix.com/zabbix/4.4/rhel/7/x86_64/zabbix-release-4.4-1.el7.noarch.rpm
-yum -y install zabbix-server-mysql zabbix-web-mysql
+yum -y install zabbix-server-mysql zabbix-web-mysql zabbix-agent
 
 # install httpd
 yum -y install httpd
-systemctl enable httpd && systemctl start httpd
 
 # install and setup php
 yum -y install php php-pear php-cgi php-common php-mbstring php-snmp php-gd php-xml php-mysql php-gettext php-bcmath
@@ -44,10 +43,12 @@ EOF
 zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p${db_pass} zabbix
 sed -i.backup -e "/# DBPassword.*/a\\\nDBPassword = ${db_pass}" /etc/zabbix/zabbix_server.conf
 sed -i.backup -e '/# DBHost.*/a\\nDBHost = localhost' /etc/zabbix/zabbix_server.conf
-systemctl enable zabbix-server && systemctl start zabbix-server
+
+systemctl enable httpd && systemctl start httpd
+
+systemctl enable zabbix-server && systemctl start zabbix-server && systemctl start zabbix-agent
 
 # configuring firewall
 firewall-cmd --add-port={10051/tcp,10050/tcp} --permanent
 firewall-cmd --add-port={80/tcp,443/tcp} --permanent
 firewall-cmd --reload
-
