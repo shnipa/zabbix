@@ -41,8 +41,6 @@ resource "datadog_monitor" "tomcat" {
   message            = "Tomcat is down"
   escalation_message = "Tomcat is down"
 
-  query = "min(last_1m):avg:network.http.cant_connect{*} > 0"
-
   thresholds = {
     alert = 1
   }
