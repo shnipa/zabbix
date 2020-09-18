@@ -1,0 +1,7 @@
+project = "weighty-forest-288021"
+region = "europe-west3"
+zone = "europe-west3-b"
+name = "datadog"
+default_machine_type = "n1-standard-1"
+image = "centos-cloud/centos-7"
+api_url = "http://api.datadoghq.eu/"
